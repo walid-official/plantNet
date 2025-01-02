@@ -3,6 +3,7 @@ import { FcGoogle } from 'react-icons/fc'
 import useAuth from '../../hooks/useAuth'
 import { toast } from 'react-hot-toast'
 import { TbFidgetSpinner } from 'react-icons/tb'
+import axios from 'axios'
 
 const SignUp = () => {
   const { createUser, updateUserProfile, signInWithGoogle, loading } = useAuth()
@@ -13,7 +14,13 @@ const SignUp = () => {
     const form = event.target
     const name = form.name.value
     const email = form.email.value
-    const password = form.password.value
+    const password = form.password.value;
+    const image = form.image.files[0];
+    const formData = new FormData();
+    formData.append("image", image);
+    const {data} = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`, formData);
+
+     const imageUrl = data.data.display_url;
 
     try {
       //2. User Registration
@@ -22,7 +29,7 @@ const SignUp = () => {
       //3. Save username & profile photo
       await updateUserProfile(
         name,
-        'https://lh3.googleusercontent.com/a/ACg8ocKUMU3XIX-JSUB80Gj_bYIWfYudpibgdwZE1xqmAGxHASgdvCZZ=s96-c'
+        imageUrl
       )
       console.log(result)
 
