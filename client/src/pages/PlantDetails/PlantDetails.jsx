@@ -4,14 +4,28 @@ import Heading from '../../components/Shared/Heading'
 import Button from '../../components/Shared/Button/Button'
 import PurchaseModal from '../../components/Modal/PurchaseModal'
 import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+// import useAxiosSecure from '../../hooks/useAxiosSecure'
+import { useParams } from 'react-router-dom'
+import axios from 'axios'
+
 
 const PlantDetails = () => {
   let [isOpen, setIsOpen] = useState(false)
-
+  const {id} = useParams()
   const closeModal = () => {
     setIsOpen(false)
   }
 
+  const {data: singleData} = useQuery({
+    queryKey: ['plants'],
+    queryFn: async () => {
+      const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/plant/${id}`)
+      return data
+      
+    }
+  })
+  console.log(singleData);
   return (
     <Container>
       <Helmet>
